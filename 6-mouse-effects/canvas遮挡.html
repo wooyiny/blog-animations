@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particles with Overlay</title>
+</head>
+<body>
+    <script>
+        (function createParticles() {
+            let canvas, context, particles = [];
+            let overlay;
+
+            function init() {
+                canvas = document.createElement("canvas");
+                context = canvas.getContext("2d");
+
+                canvas.style.position = "fixed";
+                canvas.style.top = "0";
+                canvas.style.left = "0";
+                document.body.appendChild(canvas);
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                overlay = document.createElement("div");
+                overlay.style.position = "fixed";
+                overlay.style.top = "0";
+                overlay.style.left = "0";
+                overlay.style.width = "100%";
+                overlay.style.height = "100%";
+                overlay.style.pointerEvents = "auto";
+                document.body.appendChild(overlay);
+
+                bindEvents();
+                loop();
+            }
+
+            function bindEvents() {
+                overlay.addEventListener("mousemove", onMouseMove);
+                window.addEventListener("resize", onWindowResize);
+            }
+
+            function onWindowResize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            function onMouseMove(e) {
+                addParticle(e.clientX, e.clientY);
+            }
+
+            function addParticle(x, y) {
+                particles.push({ x, y, radius: 5, color: "#e6f1f7" });
+            }
+
+            function updateParticles() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    drawParticle(particles[i]);
+                }
+            }
+
+            function drawParticle(particle) {
+                context.fillStyle = particle.color;
+                context.beginPath();
+                context.arc(particle.x, particle.y, particle.radius, 0, 2 * Math.PI);
+                context.fill();
+            }
+
+            function loop() {
+                updateParticles();
+                requestAnimationFrame(loop);
+            }
+
+            init();
+        })();
+    </script>
+    <a href="https://www.example.com" style="position: fixed; top: 50%; left: 50%;">Clickable Link</a>
+</body>
+</html>

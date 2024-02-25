@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        /**************** 光标渲染 更好的版本？相较之下此版本只渲染一个canvas *******************/
+
+        class Circle {
+            constructor({ origin, context, color, angle, speed }) {
+                this.position = { ...origin };
+                this.context = context;
+                this.color = color;
+                this.angle = angle;
+                this.speed = speed;
+                this.renderCount = 0;
+            }
+            draw() {
+                this.context.fillStyle = this.color;
+                this.context.beginPath();
+                this.context.arc(this.position.x, this.position.y, 2, 0, Math.PI * 2, false);
+                this.context.fill();
+            }
+            move() {
+                this.position.x += Math.sin(this.angle) * this.speed;
+                this.position.y += Math.cos(this.angle) * this.speed + this.renderCount * 0.3;
+                this.renderCount++;
+            }
+        }
+
+        class Boom {
+            constructor({ origin, context, area, circleNum = 10 }) {
+                this.origin = origin;
+                this.context = context;
+                this.area = area;
+                this.circleNum = circleNum;
+                this.circles = [];
+                this.stop = false;
+            }
+
+            randomColor() {
+                const rang = '89ABCDEF';
+                const num = 6;
+                let resultStr = '';
+                for (let i = 0, num = 6; i < num; i++) {
+                    resultStr += rang.charAt(Math.floor(rang.length * Math.random()));
+                }
+                return '#' + resultStr;
+            }
+
+            randomRange(start, end) {
+                return start + Math.random() * (end - start)
+            }
+
+            init() {
+                for (let i = 0; i < this.circleNum; i++) {
+                    const circle = new Circle({
+                        origin: this.origin,
+                        context: this.context,
+                        color: this.randomColor(),
+                        angle: this.randomRange(Math.PI / 2, Math.PI * 3 / 2),
+                        speed: this.randomRange(1, 6)
+                    })
+                    this.circles.push(circle);
+                }
+            }
+
+            move() {
+                for (let i = 0; i < this.circles.length; i++) {
+                    const curCircle = this.circles[i];
+                    if (curCircle.x >= this.area.width || curCircle.y >= this.area.height) {
+                        this.circles.splice(i, 1);
+                        i--;
+                        continue;
+                    }
+                    curCircle.move();
+                }
+                if (this.circles.length === 0) {
+                    this.stop = true;
+                }
+            }
+
+            draw() {
+                this.circles.forEach((circle) => circle.draw());
+            }
+        }
+
+        class MouseClickEffect {
+            constructor() {
+                this.drawCanvas = document.createElement('canvas');
+                this.drawContext = this.drawCanvas.getContext('2d');
+                const style = this.drawCanvas.style;
+                style.left = style.top = 0;
+                style.position = 'fixed';
+                style.zIndex = '999999999';
+                style.pointerEvents = 'none';
+                this.drawCanvas.width = this.globalWidth = window.innerWidth;
+                this.drawCanvas.height = this.globalHeight = window.innerHeight;
+                document.body.appendChild(this.drawCanvas);
+                this.booms = [];
+                this.running = false;
+
+                window.addEventListener('mousedown', this.handleMouseDown.bind(this));
+                window.addEventListener('resize', this.changeWindow.bind(this));
+            }
+
+            handleMouseDown(e) {
+                const boom = new Boom({
+                    origin: { x: e.clientX, y: e.clientY },
+                    area: { width: this.globalWidth, height: this.globalHeight },
+                    context: this.drawContext
+                });
+                boom.init();
+                this.booms.push(boom);
+                this.running || this.run();
+            }
+
+            changeWindow() {
+                this.booms = [];
+                this.running = false;
+                this.drawCanvas.width = this.globalWidth = window.innerWidth;
+                this.drawCanvas.height = this.globalHeight = window.innerHeight;
+                this.drawContext.clearRect(0, 0, this.globalWidth, this.globalHeight);
+            }
+
+            run() {
+                this.running = true;
+                if (this.booms.length === 0) {
+                    return this.running = false;
+                }
+                requestAnimationFrame(this.run.bind(this));
+                this.drawContext.clearRect(0, 0, this.globalWidth, this.globalHeight);
+                for (let i = 0; i < this.booms.length; i++) {
+                    const boom = this.booms[i];
+                    if (boom.stop) {
+                        this.booms.splice(i, 1);
+                        i--;
+                        continue;
+                    }
+                    boom.move();
+                    boom.draw();
+                }
+            }
+        }
+
+        new MouseClickEffect();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Sparkle Trail and Dust Cursor</title>
+
+  <style>
+    body {
+      background-color: black;
+      color: aquamarine;
+    }
+  </style>
+</head>
+
+<body>
+  <a class="magic-hover magic-hover__square" src="https://github.com/dshongphuc/magic-mouse-js">magic mouse js</a>
+  <br>
+  <div class="no-cursor">no cursor</div>
+
+  <script type="text/javascript"
+    src="https://res.cloudinary.com/veseylab/raw/upload/v1684982764/magicmouse-2.0.0.cdn.min.js"></script>
+  <script type="text/javascript">
+    /* example #1 */
+    /*
+      options = {
+        "outerStyle": "circle-basic",
+        "hoverEffect": "circle-move",
+        "hoverItemMove": false,
+        "defaultCursor": false,
+        "outerWidth": 30,
+        "outerHeight": 30
+      }
+    */
+
+    /* example #2 */
+    options = {
+      "outerStyle": "disable",
+      "hoverEffect": "pointer-overlay",
+      "hoverItemMove": false,
+      "defaultCursor": false,
+      "outerWidth": 30,
+      "outerHeight": 30
+    }
+
+    /* example #3 */
+    /*
+      options = {
+        "outerStyle": "disable",
+        "hoverEffect": "pointer-blur",
+        "hoverItemMove": false,
+        "defaultCursor": false,
+        "outerWidth": 30,
+        "outerHeight": 30
+      }
+    */
+
+    /* example #4 */
+    /*
+      options = {
+        "outerStyle": "circle-basic",
+        "hoverEffect": "pointer-blur",
+        "hoverItemMove": false,
+        "defaultCursor": false,
+        "outerWidth": 41,
+        "outerHeight": 41
+      }
+    */
+
+    /* example #5 */
+    /*
+      options = {
+        "outerStyle": "circle-basic",
+        "hoverEffect": "circle-move",
+        "hoverItemMove": false,
+        "defaultCursor": true,
+        "outerWidth": 41,
+        "outerHeight": 41
+      }
+    */
+
+    magicMouse(options);
+  </script>
+
+</body>
+
+</html>

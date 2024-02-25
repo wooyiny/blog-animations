@@ -1,0 +1,80 @@
+<!-- 参考 https://zhuanlan.zhihu.com/p/28257724 -->
+<!-- GitHub: https://github.com/hustcc/ribbon.js -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>尤雨溪 Evan You</title>
+</head>
+
+<body>
+    <canvas></canvas>
+    <script>
+        // 移动端 触摸移动事件
+        document.addEventListener('touchmove', function (e) {
+            // 阻止默认行为, 即滑动屏幕导致整个网页的滚动
+            // 确保滑动不会导致页面滚动, 从而保持彩带效果的主导地位
+            e.preventDefault()
+        })
+        
+        let c = document.getElementsByTagName('canvas')[0],
+            x = c.getContext('2d'),
+            pr = window.devicePixelRatio || 1,
+            w = window.innerWidth,
+            h = window.innerHeight,
+            f = 90,     // size 条带的宽度
+            q,
+            m = Math,
+            r = 0,
+            u = m.PI * 2,
+            v = m.cos,
+            z = m.random
+            
+        c.width = w * pr
+        c.height = h * pr
+        x.scale(pr, pr)
+        x.globalAlpha = 0.6     // alpha 透明度
+
+        // loop
+        function i() {
+            x.clearRect(0, 0, w, h)
+            q = [{ x: 0, y: h * .7 + f }, { x: 0, y: h * .7 - f }]
+            while (q[1].x < w + f) d(q[0], q[1])
+        }
+
+        // draw
+        function d(i, j) {
+            x.beginPath()
+            x.moveTo(i.x, i.y)
+            x.lineTo(j.x, j.y)
+            let k = j.x + (z() * 2 - 0.25) * f,
+                n = y(j.y)
+            x.lineTo(k, n)
+            x.closePath()
+            r -= u / -50
+            
+            // 取色 实现顺滑的颜色过渡
+            // 效果相当于
+            //    R = cos(r)*127+128;
+            //    G = cos(r+2*PI/3)*127+128;
+            //    B = cos(r+4*PI/3)*127+128);
+            x.fillStyle = '#' + (v(r) * 127 + 128 << 16 | v(r + u / 3) * 127 + 128 << 8 | v(r + u / 3 * 2) * 127 + 128).toString(16)
+            x.fill()
+            q[0] = q[1]
+            q[1] = { x: k, y: n }
+        }
+
+        function y(p) {
+            let t = p + (z() * 2 - 1.1) * f
+            return (t > h || t < 0) ? y(p) : t
+        }
+        document.onclick = i
+        document.ontouchstart = i
+        i()
+    </script>
+</body>
+
+</html>
+

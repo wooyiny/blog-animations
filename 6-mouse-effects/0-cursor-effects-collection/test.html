@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Cursor Effects</title>
+</head>
+
+<body>
+    <script src="https://unpkg.com/cursor-effects@latest/dist/browser.js"></script>
+    <script src="./src/fairyDustCursor.js"></script>
+    <script>
+        window.addEventListener("load", (event) => {
+            new cursoreffects.fairyDustCursor({
+                colors: ["#ff0000", "#00ff00", "#0000ff"],
+              });
+          });
+    </script>
+</body>
+</html>
